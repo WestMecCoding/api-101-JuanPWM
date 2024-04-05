@@ -7,59 +7,59 @@
     <title>XHR and Graph</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>    
-    hello from Index.html!
-    <h1>Global Average Tempertures 1880 - 2023</h1>
-    <canvas class="myChart" width="400" height="200"></canvas>
+<body>
+    <h1 style="font-family: Arial, Helvetica, sans-serif;text-align: center;">Catalonia Vehicular Car Crashes 2000 to 2011</h1>
+    <canvas id="myChart" width="400" height="200"></canvas>
     <script>
         window.addEventListener('load', fetchData);
-        function fetchData() {
-            const xhr = new XMLHttpRequest();
-            xhr.open('GET', 'http://localhost:3000/csv-data', true)
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    let data = xhr.responseText;
-                    let globalTemps = processData(data);
-
-                    // console.log(data);
-                    // console.log(globalTemps);
-                    renderChart(globalTemps);
-                } else {
-                    console.log('so like', xhr.statusText);
-                }
+        function fetchData(){
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', 'http://localhost:3000/csv-data', true);
+        xhr.onreadystatechange = function(){
+            if (xhr.readyState === 4 && xhr.status === 200){
+                let data = xhr.responseText;
+                let carCrashes = processData(data);
+                renderChart(carCrashes);
+            } else {
+                console.log('something bad happened', xhr.statusText);
             }
-            xhr.send();
         } 
-        function processData(data) {
-            const years = [];
-            const temps = [];
-            const rows = data.split('\n').slice(1);
-            rows.forEach(row => {
-                const cols = row.split(',');
-                years.push(cols[0]);
-                temps.push(14 + parseFloat(cols[1]));
-            });
-            return({years, temps});
-        } 
-        function renderChart(data) {
-            console.log('temps in render chart', data);
-            const ctx = document.getElementById('myChart');
+        xhr.send();
+    }
+    function processData(data){
+        const days = [];
+        const crashes= [];
+        const rows = data.split('\n').slice(1);
+        rows.forEach(row => {
+            const cols = row.split(',');
+            days.push(cols[0]);
+            crashes.push(14 + parseFloat(cols[1]));
+        });
+        return{ days, crashes };
+    }
+    function renderChart(data){
+        console.log('crashes in renderChart', data);
+         const ctx = document.getElementById('myChart');
 
-            const myChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                labels: data.years,
-                datasets: [{
-                    label: 'Temperatures in Celsius',
-                    data: data.temps,
-                    borderWidth: 1
-                }]
-                },
-                options: {},
-            });
-        };
-
-
+  const myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: data.days,
+      datasets: [{
+        label: 'Car Crashes in Catalonia',
+        data: data.crashes,
+        borderWidth: 3
+      }]
+    },
+    options: {
+        scales:{
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+  });
+    };
     </script>
 </body>
 </html>
